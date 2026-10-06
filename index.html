@@ -1,0 +1,525 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PromptPrint</title>
+  <meta name="description" content="Calculate the energy, water and carbon footprint of your AI use as a college student, grounded in published research.">
+  <meta property="og:title" content="PromptPrint: every prompt leaves a print">
+  <meta property="og:description" content="Calculate the energy, water and carbon behind your AI habits. 15 questions, real data.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23f4efe4'/%3E%3Cellipse cx='32' cy='40' rx='12' ry='16' fill='%231c1a15'/%3E%3Ccircle cx='20' cy='17' r='4' fill='%231c1a15'/%3E%3Ccircle cx='29' cy='12' r='4.5' fill='%231c1a15'/%3E%3Ccircle cx='39' cy='13' r='4' fill='%231c1a15'/%3E%3Ccircle cx='46' cy='20' r='3.5' fill='%231c1a15'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="topbar" id="topbar">
+    <div class="nav-pill">
+      <a class="brand" href="#/calculate" aria-label="PromptPrint home">
+        <svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true">
+          <ellipse cx="20" cy="25" rx="8" ry="11" class="bm-sole"/>
+          <circle cx="12" cy="10" r="2.6" class="bm-toe"/>
+          <circle cx="18" cy="6.5" r="3" class="bm-toe"/>
+          <circle cx="25" cy="7" r="2.6" class="bm-toe"/>
+          <circle cx="30" cy="12" r="2.2" class="bm-toe"/>
+          <path d="M16 22h4v6h4" class="bm-circuit"/>
+          <circle cx="24" cy="28" r="1.4" class="bm-node"/>
+        </svg>
+        <span>PromptPrint</span>
+      </a>
+      <nav class="tabs" id="tabs" aria-label="Sections">
+        <a href="#/calculate" data-view="calculate"><i data-lucide="calculator"></i><span>Calculate</span></a>
+        <a href="#/learn" data-view="learn"><i data-lucide="chart-no-axes-combined"></i><span>Learn</span></a>
+        <a href="#/stewardship" data-view="stewardship"><i data-lucide="sprout"></i><span>Stewardship</span></a>
+        <a href="#/method" data-view="method"><i data-lucide="book-marked"></i><span>Method</span></a>
+        <span class="tab-ink" id="tabInk" aria-hidden="true"></span>
+      </nav>
+      <a class="btn btn-primary btn-sm nav-cta" href="#/calculate" data-start="1"><span>Take the quiz</span><i data-lucide="arrow-right"></i></a>
+    </div>
+  </header>
+
+  <main id="main">
+
+    <!-- ============================ CALCULATE ============================ -->
+    <section class="view" id="view-calculate" data-view="calculate">
+      <div class="stage" id="stage">
+        <div class="scene-wrap" id="sceneWrap" aria-hidden="true"></div>
+        <div class="stage-shade"></div>
+
+        <div class="landing" id="landing">
+          <div class="landing-top">
+            <h1 class="hero-h">Every prompt <span class="hero-chip" aria-hidden="true"><i data-lucide="sparkles"></i></span> leaves<br>a print on the <span class="green">planet we share</span></h1>
+            <p class="hero-side">An AI footprint calculator for college students. Fifteen questions, grounded in published research, reveal the electricity, water and carbon behind your AI habits.</p>
+          </div>
+          <div class="landing-bottom">
+            <div class="glass-row">
+              <div class="glass"><span>A typical text prompt</span><b>0.3<small>Wh</small></b><em>about an LED bulb for two minutes</em></div>
+              <div class="glass"><span>One 5-second AI video</span><b>944<small>Wh</small></b><em>more than 3,000 text prompts</em></div>
+              <div class="glass"><span>Data centers by 2030</span><b>945<small>TWh</small></b><em>more than double 2024 (IEA)</em></div>
+            </div>
+            <div class="cta-row">
+              <button class="btn btn-primary btn-lg" id="startBtn"><span>Start calculating</span><i data-lucide="arrow-right"></i></button>
+              <a class="btn btn-ghost btn-lg" href="#/learn"><span>Explore the data</span><i data-lucide="arrow-up-right"></i></a>
+            </div>
+          </div>
+        </div>
+
+        <div class="survey" id="survey" hidden>
+          <div class="survey-hud">
+            <div class="progress" id="progress"></div>
+            <div class="meter" id="meter" aria-live="polite">
+              <div class="meter-item m-energy"><i data-lucide="zap"></i><b id="mEnergy">0</b><span id="mEnergyU">Wh</span></div>
+              <div class="meter-item m-water"><i data-lucide="droplet"></i><b id="mWater">0</b><span id="mWaterU">mL</span></div>
+              <div class="meter-item m-carbon"><i data-lucide="cloud"></i><b id="mCarbon">0</b><span id="mCarbonU">g</span></div>
+              <span class="meter-label">your year so far</span>
+            </div>
+          </div>
+          <div class="qcard" id="qcard" role="group" aria-live="polite"></div>
+        </div>
+
+        <div class="crunch" id="crunch" hidden>
+          <svg viewBox="0 0 120 120" class="crunch-ring" aria-hidden="true">
+            <circle cx="60" cy="60" r="50" class="cr-track"/>
+            <circle cx="60" cy="60" r="50" class="cr-arc" id="crArc"/>
+          </svg>
+          <p class="crunch-msg" id="crunchMsg">Tallying your prompts…</p>
+        </div>
+      </div>
+
+      <div class="results" id="results" hidden></div>
+    </section>
+
+    <!-- ============================ LEARN ============================ -->
+    <section class="view" id="view-learn" data-view="learn" hidden>
+      <div class="learn-hero">
+        <canvas id="learnCanvas" aria-hidden="true"></canvas>
+        <div class="lh-art" id="lhArt" aria-hidden="true"></div>
+        <div class="wrap">
+          <p class="eyebrow"><span class="dot"></span>Learn</p>
+          <h1 class="display">The cloud<br>is made of <em>concrete.</em></h1>
+          <p class="lede">“The cloud” sounds weightless. It isn’t. It’s buildings full of chips, wired to power plants and plumbed into watersheds. Here’s what the research says about AI’s environmental footprint, from one prompt to the whole planet.</p>
+          <a class="scroll-cue" href="#journey"><span>Scroll</span><i data-lucide="chevrons-down"></i></a>
+        </div>
+      </div>
+
+      <!-- Journey -->
+      <section class="chapter" id="journey">
+        <div class="wrap">
+          <header class="ch-head">
+            <span class="ch-num">01</span>
+            <h2>Where your prompt goes</h2>
+            <p>The trip takes a second or two. Here’s everything it touches along the way.</p>
+          </header>
+          <div class="journey">
+            <div class="journey-visual"><div class="journey-sticky" id="journeySvg"></div></div>
+            <ol class="journey-steps" id="journeySteps">
+              <li data-step="0"><span class="js-n">1</span><h3>You hit send</h3><p>Your words leave your laptop as light pulses in fiber-optic cable, bound for a data center that may be hundreds of miles away.</p></li>
+              <li data-step="1"><span class="js-n">2</span><h3>GPUs do the math</h3><p>Racks of specialized chips run the model, predicting your answer one token at a time. Nearly every watt they draw ends up as heat.</p></li>
+              <li data-step="2"><span class="js-n">3</span><h3>Cooling fights the heat</h3><p>Chillers and evaporative cooling towers carry that heat away. In U.S.-average conditions about <b>0.55 L of water evaporates per kWh</b> on site. <span class="src" data-src="li"></span></p></li>
+              <li data-step="3"><span class="js-n">4</span><h3>The grid powers it all</h3><p>On the average U.S. grid, each kWh emits about <b>348 g of CO₂</b> <span class="src" data-src="egrid"></span> and consumes another <b>~3.1 L of water</b> at power plants. <span class="src" data-src="li"></span></p></li>
+              <li data-step="4"><span class="js-n">5</span><h3>The answer comes back</h3><p>A typical text answer costs about <b>0.3 Wh</b>. That’s tiny, until you multiply by every student, every retry, every image, every day. <span class="src" data-src="epoch"></span></p></li>
+            </ol>
+          </div>
+        </div>
+      </section>
+
+      <!-- Energy per task -->
+      <section class="chapter">
+        <div class="wrap">
+          <header class="ch-head">
+            <span class="ch-num">02</span>
+            <h2>Not all prompts are equal</h2>
+            <p>Energy per task spans more than three orders of magnitude, so this chart uses a logarithmic scale. Each gridline is 10× the one before.</p>
+          </header>
+          <div class="chart-card">
+            <div class="chart-head">
+              <div>
+                <h3>Electricity per AI task</h3>
+                <p class="chart-sub">Watt-hours per request, data center incl. cooling · log scale</p>
+              </div>
+              <div class="seg" role="group" aria-label="Reference lines">
+                <button class="seg-btn is-on" data-refs="on">Show everyday references</button>
+              </div>
+            </div>
+            <div class="chart" id="chartTasks" role="img" aria-label="Bar chart of energy per AI task on a log scale"></div>
+            <details class="table-toggle"><summary>View as table</summary><div id="tableTasks"></div></details>
+          </div>
+          <div class="tiles">
+            <div class="tile"><span class="tile-label">One 5-second AI video ≈</span><b class="tile-val" data-count="3147" data-suffix="×">0</b><span class="tile-sub">the energy of a typical text prompt</span></div>
+            <div class="tile"><span class="tile-label">Reasoning prompt vs. standard</span><b class="tile-val" data-count="17" data-suffix="×">0</b><span class="tile-sub">o3 medium prompt, 5.15 Wh vs 0.3 Wh</span></div>
+            <div class="tile"><span class="tile-label">Google’s median prompt, 2024 → 2025</span><b class="tile-val" data-count="33" data-suffix="× less">0</b><span class="tile-sub">energy per prompt after one year of efficiency work <span class="src" data-src="google"></span></span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Growth -->
+      <section class="chapter">
+        <div class="wrap">
+          <header class="ch-head">
+            <span class="ch-num">03</span>
+            <h2>Data centers are scaling fast</h2>
+            <p>AI is now the biggest driver of data-center electricity growth. Projections differ by source, but they all point the same way.</p>
+          </header>
+          <div class="grid-2">
+            <div class="chart-card">
+              <h3>World data centers</h3>
+              <p class="chart-sub">Electricity use, TWh per year · IEA Base Case <span class="src" data-src="iea"></span></p>
+              <div class="chart" id="chartGlobal" role="img" aria-label="Line chart: world data center electricity rising from 415 TWh in 2024 to about 945 in 2030 and 1,200 in 2035"></div>
+            </div>
+            <div class="chart-card">
+              <h3>U.S. data centers</h3>
+              <p class="chart-sub">Electricity use, TWh per year · shaded = 2028 projection range <span class="src" data-src="lbnl"></span></p>
+              <div class="chart" id="chartUS" role="img" aria-label="Line chart: U.S. data center electricity from 58 TWh in 2014 to 176 in 2023, projected 325 to 580 TWh by 2028"></div>
+            </div>
+          </div>
+          <div class="tiles">
+            <div class="tile"><span class="tile-label">Share of world electricity, 2024</span><b class="tile-val" data-count="1.5" data-dec="1" data-suffix="%">0</b><span class="tile-sub">415 TWh, more than doubling by 2030 <span class="src" data-src="iea"></span></span></div>
+            <div class="tile"><span class="tile-label">Share of U.S. electricity, 2023 → 2028</span><b class="tile-val"><span data-count="4.4" data-dec="1">0</span>% → <span data-count="12" data-dec="0">0</span>%</b><span class="tile-sub">upper projection; low case 6.7% <span class="src" data-src="lbnl"></span></span></div>
+            <div class="tile"><span class="tile-label">Renewables in data-center power</span><b class="tile-val" data-count="27" data-suffix="%">0</b><span class="tile-sub">2024; projected ~50% by 2030 <span class="src" data-src="iea"></span></span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Water -->
+      <section class="chapter chapter-water">
+        <div class="wrap">
+          <header class="ch-head">
+            <span class="ch-num">04</span>
+            <h2>The thirst nobody sees</h2>
+            <p>Water is the footprint most estimates leave out. Most of it isn’t at the data center at all. It’s at the power plant.</p>
+          </header>
+          <div class="water-hero">
+            <div class="wh-number">
+              <span class="tile-label">AI data centers’ projected water footprint by 2030</span>
+              <b class="huge" data-count="9.3" data-dec="1">0</b><span class="huge-unit">trillion litres</span>
+              <p>About the basic yearly household water needs of <b>1.3 billion people</b> in Sub-Saharan Africa. <span class="src" data-src="unu"></span></p>
+            </div>
+            <div class="bottle-lab">
+              <div class="bottle-wrap" id="bottleWrap"></div>
+              <div class="bottle-ctrl">
+                <label for="bottleRange">Prompts: <b id="bottleN">450</b></label>
+                <input type="range" id="bottleRange" min="1" max="2000" value="450" class="range">
+                <p class="bottle-read"><b id="bottleMl">0</b> mL of water, full chain (cooling + power) · <span id="bottleCount">0</span> × 500 mL bottles</p>
+                <p class="fine">≈1.1 mL per 0.3 Wh text prompt (3.69 mL/Wh, U.S. average). Google reports 0.26 mL counting on-site cooling only. <span class="src" data-src="li"></span> <span class="src" data-src="google"></span></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Training vs inference -->
+      <section class="chapter">
+        <div class="wrap">
+          <header class="ch-head">
+            <span class="ch-num">05</span>
+            <h2>Building a model vs. using it</h2>
+            <p>Training gets the headlines. But a model is trained once and then used billions of times, and that’s where most of AI’s energy goes.</p>
+          </header>
+          <div class="grid-2">
+            <div class="chart-card">
+              <h3>Training GPT-3 (2020)</h3>
+              <p class="chart-sub">One training run <span class="src" data-src="patterson"></span></p>
+              <div class="train-stats">
+                <div><b data-count="1287">0</b><span>MWh of electricity</span></div>
+                <div><b data-count="552">0</b><span>tonnes CO₂e</span></div>
+                <div><b data-count="106">0</b><span>U.S. homes’ electricity for a year</span></div>
+                <div><b data-count="700000">0</b><span>litres of water evaporated on site <span class="src" data-src="li"></span></span></div>
+              </div>
+              <div class="houses" id="houses" aria-hidden="true"></div>
+            </div>
+            <div class="chart-card">
+              <h3>Where AI’s energy goes</h3>
+              <p class="chart-sub">Share of total AI energy use <span class="src" data-src="unu"></span></p>
+              <div class="split" id="splitBar">
+                <div class="split-seg seg-inf" style="--w:85%"></div>
+                <div class="split-seg seg-train" style="--w:15%"></div>
+              </div>
+              <div class="split-legend">
+                <div><i style="background:var(--s1)"></i><span>Inference (using models)</span><b>80–90%</b></div>
+                <div><i style="background:var(--s2)"></i><span>Training</span><b>10–20%</b></div>
+              </div>
+              <p class="split-note">Every prompt you send is <b>inference</b>. The midpoint (85%) is shown. This is why everyday usage habits, multiplied across millions of people, matter more than any single training run.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Big tech + e-waste -->
+      <section class="chapter">
+        <div class="wrap">
+          <header class="ch-head">
+            <span class="ch-num">06</span>
+            <h2>Efficiency vs. growth</h2>
+            <p>Per-prompt efficiency is improving fast. Total demand is growing faster.</p>
+          </header>
+          <div class="tiles tiles-big">
+            <div class="tile tile-rise"><span class="tile-label">Google’s total emissions, 2019 → 2023</span><b class="tile-val"><i data-lucide="trending-up"></i><span data-count="48" data-prefix="+">0</span>%</b><span class="tile-sub">driven mainly by data-center energy and supply chain <span class="src" data-src="googleEnv"></span></span></div>
+            <div class="tile tile-rise"><span class="tile-label">Microsoft’s total emissions, 2020 → 2023</span><b class="tile-val"><i data-lucide="trending-up"></i><span data-count="29" data-prefix="+">0</span>%</b><span class="tile-sub">largely from building new data centers <span class="src" data-src="msEnv"></span></span></div>
+            <div class="tile"><span class="tile-label">Generative-AI e-waste, 2020–2030</span><b class="tile-val"><span data-count="1.2" data-dec="1">0</span>–<span data-count="5" data-dec="0">0</span> Mt</b><span class="tile-sub">cumulative; circular strategies could cut it up to 86% <span class="src" data-src="wang"></span></span></div>
+          </div>
+          <div class="jevons">
+            <div class="jv-graphic" id="jevons" aria-hidden="true"></div>
+            <div class="jv-text">
+              <h3>The rebound effect</h3>
+              <p>When something gets cheaper and faster to use, we tend to use more of it. Economists call this the <b>Jevons paradox</b>. Google cut the energy of its median prompt 33× in a year <span class="src" data-src="google"></span>, yet data-center electricity worldwide is still on track to more than double by 2030 <span class="src" data-src="iea"></span>. Efficiency is necessary. On its own it isn’t enough.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Students -->
+      <section class="chapter">
+        <div class="wrap">
+          <header class="ch-head">
+            <span class="ch-num">07</span>
+            <h2>Students are all in</h2>
+            <p>AI went from novelty to study routine in about two years. Different surveys, different countries, same story.</p>
+          </header>
+          <div class="chart-card">
+            <h3>How many students use AI?</h3>
+            <p class="chart-sub">Share of students, by survey · hover for details</p>
+            <div class="chart" id="chartStudents" role="img" aria-label="Bar chart of student AI adoption across surveys"></div>
+            <details class="table-toggle"><summary>View as table</summary><div id="tableStudents"></div></details>
+          </div>
+        </div>
+      </section>
+
+      <!-- Myths -->
+      <section class="chapter">
+        <div class="wrap">
+          <header class="ch-head">
+            <span class="ch-num">08</span>
+            <h2>Myth or fact?</h2>
+            <p>The internet is full of AI-footprint claims. Tap a card to check it.</p>
+          </header>
+          <div class="flips" id="flips"></div>
+        </div>
+      </section>
+
+      <section class="chapter chapter-end">
+        <div class="wrap center">
+          <h2 class="display-sm">Individually small.<br><em>Collectively, infrastructure.</em></h2>
+          <p class="lede">One prompt is a rounding error. Millions of students, multiplied by daily habits, reasoning modes, images and video, are a reason to build new power plants. See where you fit.</p>
+          <div class="cta-row center">
+            <a class="btn btn-primary" href="#/calculate" data-start="1"><span>Calculate my print</span><i data-lucide="arrow-right"></i></a>
+            <a class="btn btn-ghost" href="#/stewardship"><i data-lucide="sprout"></i><span>Reflect: Stewardship</span></a>
+          </div>
+        </div>
+      </section>
+    </section>
+
+    <!-- ============================ STEWARDSHIP ============================ -->
+    <section class="view" id="view-stewardship" data-view="stewardship" hidden>
+      <div class="st-hero">
+        <div class="st-orbit" id="stOrbit" aria-hidden="true"></div>
+        <div class="wrap">
+          <p class="eyebrow"><span class="dot"></span>Stewardship · A Catholic Social Thought lens</p>
+          <h1 class="display">Care for our<br><em>common home.</em></h1>
+          <p class="lede">When Robert Prevost became Pope in May 2025, he chose the name Leo, recalling Leo XIII, who answered the first industrial revolution with <i>Rerum Novarum</i> (1891). A year later Leo XIV published his first encyclical, <i>Magnifica Humanitas</i>, on safeguarding the human person in the age of artificial intelligence. This page reads AI’s footprint through that tradition. <span class="src" data-src="vnMH"></span></p>
+        </div>
+      </div>
+
+      <!-- SJA method -->
+      <section class="chapter">
+        <div class="wrap">
+          <header class="ch-head">
+            <span class="ch-num">∞</span>
+            <h2>See · Judge · Act</h2>
+            <p>Developed by Cardinal Joseph Cardijn for the Young Christian Workers and endorsed by Pope John XXIII, this three-step method moves from facts, to principles, to practice. <span class="src" data-src="mm"></span></p>
+          </header>
+          <div class="sja" id="sja">
+            <a class="sja-step" href="#see"><span class="sja-icon"><i data-lucide="eye"></i></span><b>See</b><span>Review the concrete situation honestly, with data.</span></a>
+            <span class="sja-line" aria-hidden="true"></span>
+            <a class="sja-step" href="#judge"><span class="sja-icon"><i data-lucide="scale"></i></span><b>Judge</b><span>Weigh it in the light of the Church’s social principles.</span></a>
+            <span class="sja-line" aria-hidden="true"></span>
+            <a class="sja-step" href="#act"><span class="sja-icon"><i data-lucide="hand-heart"></i></span><b>Act</b><span>Decide what can and should be done, then do it.</span></a>
+          </div>
+          <blockquote class="pull">“These three stages are usually expressed in the three terms: look, judge, act.”<cite>John XXIII, <i>Mater et Magistra</i> §236</cite></blockquote>
+        </div>
+      </section>
+
+      <!-- SEE -->
+      <section class="chapter" id="see">
+        <div class="wrap">
+          <header class="ch-head">
+            <span class="ch-num ch-see"><i data-lucide="eye"></i></span>
+            <h2>See: the footprint is real</h2>
+            <p>The Church’s documents on AI name its material cost directly.</p>
+          </header>
+          <div class="grid-2">
+            <div class="st-card" id="seeYou"></div>
+            <div class="st-card st-quote">
+              <blockquote>“Current AI models and the hardware required to support them consume vast amounts of energy and water, significantly contributing to CO₂ emissions and straining resources.”</blockquote>
+              <cite><i>Antiqua et Nova</i> §96 (2025) <span class="src" data-src="aen"></span></cite>
+              <p>The same note warns that metaphors like “the cloud” can hide the physical infrastructure behind AI. <i>Magnifica Humanitas</i> asks that technology’s new possibilities be used to “respect the environment, avoid waste and prevent new forms of exploitation” (§67). <span class="src" data-src="mh"></span></p>
+            </div>
+          </div>
+          <div class="see-facts">
+            <div><b>945 TWh</b><span>projected data-center electricity in 2030, more than double 2024 <span class="src" data-src="iea"></span></span></div>
+            <div><b>9.3 trillion L</b><span>projected AI data-center water footprint by 2030 <span class="src" data-src="unu"></span></span></div>
+            <div><b>5 Mt</b><span>upper estimate of generative-AI e-waste by 2030 <span class="src" data-src="wang"></span></span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- JUDGE -->
+      <section class="chapter" id="judge">
+        <div class="wrap">
+          <header class="ch-head">
+            <span class="ch-num ch-judge"><i data-lucide="scale"></i></span>
+            <h2>Judge: four permanent principles</h2>
+            <p>The Church names four principles that hold together all of its social teaching: the dignity of the human person, the common good, subsidiarity, and solidarity. Tap each one to apply it to AI’s footprint. <span class="src" data-src="compendium"></span></p>
+          </header>
+          <div class="principles" id="principles"></div>
+        </div>
+      </section>
+
+      <!-- Integral ecology -->
+      <section class="chapter">
+        <div class="wrap">
+          <header class="ch-head">
+            <span class="ch-num ch-judge"><i data-lucide="network"></i></span>
+            <h2>Integral ecology: everything is connected</h2>
+            <p><i>Laudato Si’</i> insists that environmental and social problems can’t be solved separately: “We are faced not with two separate crises, one environmental and the other social, but rather with one complex crisis which is both social and environmental” (§139). <i>Magnifica Humanitas</i> carries this into the AI era, joining “the cry of the earth and the cry of the poor” (§43). Hover or tap a node to trace its connections. <span class="src" data-src="ls"></span></p>
+          </header>
+          <div class="web-card">
+            <div class="web" id="ecoWeb" role="img" aria-label="Network diagram showing how a single prompt connects to electricity, water, climate, minerals, communities, the poor, future generations and learning"></div>
+            <div class="web-info" id="ecoInfo">
+              <h3>Start with a prompt</h3>
+              <p>Select any node to see how it connects to the rest. In integral ecology, nothing stands alone.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Stewardship -->
+      <section class="chapter chapter-steward">
+        <div class="wrap">
+          <header class="ch-head">
+            <span class="ch-num ch-judge"><i data-lucide="sprout"></i></span>
+            <h2>Stewardship: to till and to keep</h2>
+          </header>
+          <div class="steward">
+            <div class="steward-art" id="stewardArt" aria-hidden="true"></div>
+            <div class="steward-text">
+              <p class="verse">“The Lord God took the man and put him in the garden of Eden to till it and keep it.”<cite>Genesis 2:15</cite></p>
+              <p><i>Laudato Si’</i> reads this verse as a charter: <b>tilling</b> means cultivating and working, and <b>keeping</b> means caring, protecting, overseeing and preserving (§67). Creation is entrusted, not owned. <span class="src" data-src="ls"></span></p>
+              <p><i>Magnifica Humanitas</i> calls scientific discoveries “talents entrusted to humanity so that they may bear fruit” (§9). In the parable, the servants are judged neither for owning talents nor for refusing to use them, but for what they did with them. AI is such a talent. Stewardship doesn’t ask students to bury it. It asks them to use it in a way that keeps the garden. <span class="src" data-src="mh"></span></p>
+              <p>That rules out two easy answers: <b>rejection</b> (“never use AI”) and <b>indifference</b> (“it’s just electricity”). What’s left is the harder middle path: using a powerful tool deliberately, in proportion to the good it actually serves.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ACT -->
+      <section class="chapter" id="act">
+        <div class="wrap">
+          <header class="ch-head">
+            <span class="ch-num ch-act"><i data-lucide="hand-heart"></i></span>
+            <h2>Act: from habits to institutions</h2>
+            <p><i>Laudato Si’</i> praises small daily choices: “We must not think that these efforts are not going to change the world” (§212). But <i>Magnifica Humanitas</i> also gives schools, universities and local communities a voice in the choices that shape daily life (§71). Act on both levels.</p>
+          </header>
+          <div class="act-grid">
+            <div class="st-card pledge">
+              <h3><i data-lucide="user-check"></i> My pledge</h3>
+              <p class="fine" id="pledgeBasis">Based on a typical student profile. <a href="#/calculate" data-start="1">Take the calculator</a> to personalize.</p>
+              <ul class="pledge-list" id="pledgeList"></ul>
+              <div class="pledge-total">
+                <div><span>I’d save per year</span><b id="pledgeSave">0 Wh</b></div>
+                <div><span>If my campus of</span><input type="number" id="campusN" value="10000" min="100" step="100" aria-label="Campus size"><span>did the same</span><b id="campusSave">0 kWh</b></div>
+              </div>
+            </div>
+            <div class="together">
+              <h3><i data-lucide="users"></i> Together, as a community</h3>
+              <ol class="together-list">
+                <li><b>Ask for transparency.</b> Encourage your university to publish the energy and water impact of the AI tools it licenses, and to choose providers that report it. <em>Subsidiarity</em></li>
+                <li><b>Shape campus AI policy.</b> Student government and faculty senates can write sustainability into AI guidelines: default to efficient models, discourage wasteful use. <em>Common good</em></li>
+                <li><b>Watch local siting.</b> New data centers draw on local water and grids. Show up when your town or county debates one. <em>Solidarity</em></li>
+                <li><b>Keep learning human.</b> <i>Antiqua et Nova</i> warns that heavy reliance on AI in education can erode the ability to do skills independently (§81). Using AI less, and better, is good for minds and for the planet. <em>Human dignity</em></li>
+                <li><b>Teach the footprint.</b> Share this calculator in a class, club or residence hall. You can’t care for what you can’t see. <em>See–Judge–Act</em></li>
+              </ol>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="chapter chapter-end">
+        <div class="wrap">
+          <header class="ch-head">
+            <span class="ch-num"><i data-lucide="message-circle-question"></i></span>
+            <h2>For reflection & discussion</h2>
+          </header>
+          <div class="reflect" id="reflect">
+            <div class="rq"><span>1</span><p>Which of your AI uses genuinely serve your learning and others, and which are habit, convenience or entertainment? Where would proportion look different?</p></div>
+            <div class="rq"><span>2</span><p>The communities hosting data centers rarely use the services they power. What would <b>solidarity</b> with them require of companies, governments, and users?</p></div>
+            <div class="rq"><span>3</span><p><i>Magnifica Humanitas</i> warns that “a more moral AI is not enough if that morality is determined by a few.” Who should decide how AI’s environmental costs are shared? <span class="src" data-src="vnMH"></span></p></div>
+            <div class="rq"><span>4</span><p>How does the <b>See–Judge–Act</b> method change the way you’d answer “Is it wrong to use AI?”</p></div>
+          </div>
+        </div>
+      </section>
+    </section>
+
+    <!-- ============================ METHOD ============================ -->
+    <section class="view" id="view-method" data-view="method" hidden>
+      <div class="wrap method">
+        <header class="ch-head method-head">
+          <p class="eyebrow"><span class="dot"></span>Method & Sources</p>
+          <h1 class="display-sm">How we calculate your print</h1>
+          <p class="lede">Every factor below is drawn from a published study, company disclosure or government dataset. Where sources disagree, we picked a central estimate and say so.</p>
+        </header>
+
+        <div class="formula">
+          <h3>The model</h3>
+          <pre><code>weekly energy (Wh) =
+    chatbot prompts × [(1 − long share) × 0.3 + long share × 2.5] × model factor
+  + reasoning prompts × 5.15
+  + coding requests × 2.5
+  + AI search answers × 0.24  +  in-app AI messages × 0.3
+  + images × 1.35  +  video clips × 944
+
+chatbot prompts = days per week × prompts per day × retry factor
+yearly energy   = weekly energy × weeks of use
+water (mL)      = energy (Wh) × 3.692     carbon (g CO₂) = energy (Wh) × 0.348</code></pre>
+        </div>
+
+        <h3 class="m-h3">Factors</h3>
+        <div class="table-wrap"><table class="mtable" id="factorTable"></table></div>
+
+        <h3 class="m-h3">What’s included, and what isn’t</h3>
+        <div class="grid-2 limits">
+          <div class="st-card"><h4><i data-lucide="circle-check"></i> Included</h4><ul><li>Electricity used by AI chips, host servers, idle capacity and data-center overhead (cooling, power conversion) per request</li><li>Water evaporated for cooling on site, plus water consumed to generate the electricity</li><li>Carbon from electricity at the U.S. average grid mix (location-based)</li></ul></div>
+          <div class="st-card"><h4><i data-lucide="circle-minus"></i> Not included</h4><ul><li>Training the models (amortized over billions of requests, it’s small per prompt, but large in absolute terms)</li><li>Your own device and home internet</li><li>Manufacturing chips and buildings (embodied carbon, e-waste)</li><li>Companies’ renewable-energy purchases (market-based accounting would lower carbon)</li></ul></div>
+        </div>
+
+        <h3 class="m-h3">Honest caveats</h3>
+        <ul class="caveats">
+          <li><b>Companies don’t publish per-request data for most products.</b> Our figures come from a mix of first-party disclosures (Google, OpenAI) and independent benchmarks and estimates (Epoch AI, Jegham et al., MIT Technology Review). Real values vary by model, data center, time of day and response length.</li>
+          <li><b>Estimates have been falling.</b> A widely-cited 2023 figure of ~3 Wh per ChatGPT query is now considered roughly 10× too high for typical text prompts. Hardware keeps getting more efficient.</li>
+          <li><b>Location matters a lot.</b> The same prompt served from a hydro-powered region can emit a small fraction of the U.S. average carbon, while a hot, dry region can use far more water.</li>
+          <li><b>Survey ranges are approximations.</b> Options like “3–4 days” use their midpoints. The “typical student” profile is illustrative, built from survey defaults informed by Lumina–Gallup usage rates, not a measured average.</li>
+        </ul>
+
+        <h3 class="m-h3">References</h3>
+        <ol class="refs" id="refs"></ol>
+        <p class="fine">Built as a class project. Data checked October 2026. Quotations from Church documents are from the official English texts at vatican.va.</p>
+      </div>
+    </section>
+  </main>
+
+  <div class="tooltip" id="tooltip" role="tooltip" hidden></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/MotionPathPlugin.min.js"></script>
+  <script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/charts.js"></script>
+  <script src="js/scene.js"></script>
+  <script src="js/calculator.js"></script>
+  <script src="js/learn.js"></script>
+  <script src="js/stewardship.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
